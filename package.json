@@ -1,0 +1,19 @@
+{
+  "name": "my-golf-game",
+  "version": "1.0.0",
+  "description": "My Golf Game is a tool that helps users improve their golf game.",
+  "main": "index.js",
+  "scripts": {
+    "test": "scripts.test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DevinBerens/my-golf-game.git"
+  },
+  "author": "Devin Berens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DevinBerens/my-golf-game/issues"
+  },
+  "homepage": "https://github.com/DevinBerens/my-golf-game#readme"
+}
