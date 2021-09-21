@@ -1,6 +1,8 @@
 {
   "name": "my-golf-game",
   "version": "1.0.0",
+  "start_url": "/?source=pwa",
+  "background_color": "#404040",
   "description": "My Golf Game is a tool that helps users improve their golf game.",
   "main": "index.js",
   "scripts": {
