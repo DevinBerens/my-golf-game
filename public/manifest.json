@@ -1,6 +1,7 @@
 {
   "name": "my-golf-game",
   "version": "1.0.0",
+  "id": "my-golf-game",
   "start_url": "/index.html",
   "background_color": "#404040",
   "description": "My Golf Game is a tool that helps users improve their golf game.",

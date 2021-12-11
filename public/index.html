@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="manifest" href="/public/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Golf Game</title>
+  </head>
+  <body class="container">
+    <div class="header">
+      <div>
+        <h3>My Golf Game</h3>
+      </div>
+    </div>
+    <div
+      style="width: 100%; height: 100%;
+    flex-direction: column;
+    align-content: center;
+    padding: 15px;"
+    >
+      <div
+        style="display: flex; justify-content: center; flex-direction: column; margin: 0 auto; max-width:400px; min-height: 80%;"
+      >
+        <form id="loginActions">
+          <input
+            style="color: #ffffff"
+            type="email"
+            id="email"
+            placeholder="Enter Email"
+            autocomplete="off"
+          />
+          <input
+            style="color: #ffffff"
+            type="password"
+            id="password"
+            placeholder="Enter Password"
+            autocomplete="off"
+          />
+          <div style="margin-top: 25px; display: flex;">
+            <a style=" width: 35%; margin: 0 auto;" href="home.html">
+              <button style="width:100%;" type="submit" id="signup">
+                Sign up
+              </button>
+            </a>
+            <a style=" width: 35%; margin: 0 auto;" href="home.html">
+              <button style=" width: 100%" type="submit" id="login">
+                Log in
+              </button>
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+        addDoc,
+        doc,
+        deleteDoc,
+        where,
+        query,
+        updateDoc
+      } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+      const firebaseConfig = {
+        apiKey: 'AIzaSyA9__Hlz8cGIPhJrSFSIIkgBIX5qhn8WGo',
+        authDomain: 'my-golf-game-5f1bc.firebaseapp.com',
+        projectId: 'my-golf-game-5f1bc',
+        storageBucket: 'my-golf-game-5f1bc.appspot.com',
+        messagingSenderId: '560609426459',
+        appId: '1:560609426459:web:ab0d0c3f69373d414b8cbe'
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      localStorage.setItem('db', JSON.stringify(db));
+
+      let form = document.querySelector('#loginActions');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        async function getUsers(db) {
+          let users = collection(db, 'users');
+          let userSnapshot = await getDocs(users);
+          let userList = userSnapshot.docs.map(doc => doc.data());
+          return userList;
+        }
+        let myUser;
+        getUsers(db)
+          .then(ret => {
+            myUser = ret.find(
+              user =>
+                user.email === form.email.value &&
+                user.password === form.password.value
+            );
+            if (e.submitter === document.getElementById('login')) {
+              if (myUser) {
+                localStorage.setItem('user', JSON.stringify(myUser.email));
+                window.location.pathname = '/home';
+              } else {
+                alert(
+                  'Incorrect login information. Please sign up or try again.'
+                );
+              }
+            } else {
+              if (!myUser) {
+                addDoc(collection(db, 'users'), {
+                  email: form.email.value,
+                  password: form.password.value
+                })
+                  .then(() => {
+                    localStorage.setItem(
+                      'user',
+                      JSON.stringify({ email: form.email.value })
+                    );
+                    window.location.pathname = '/home';
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              } else {
+                localStorage.setItem(
+                  'user',
+                  JSON.stringify({ email: form.email.value })
+                );
+                window.location.pathname = '/home';
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
+    </script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+  </body>
+</html>

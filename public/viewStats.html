@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!--Import materialize.css-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Golf Game</title>
+  </head>
+  <body class="container">
+    <div class="header">
+      <div
+        onclick="goHome()"
+        style="top: 35px; display: flex; align-items: center; left: 15px; position: absolute; cursor: pointer;"
+      >
+        <i style="font-size: 32px; margin-left: 10px;" class="fa fa-home"></i>
+      </div>
+      <div>
+        <h3>My Golf Game</h3>
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div style="flex: 1 1 auto">Par</div>
+      <div style="flex: 1 1 auto">FIR</div>
+      <div style="flex: 1 1 auto">GIR</div>
+      <div style="flex: 1 1 auto">Putts</div>
+      <div style="flex: 1 1 auto">Score</div>
+    </div>
+    <div style="padding: 0;" id="score-list"></div>
+  </body>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      doc,
+      deleteDoc,
+      where,
+      query,
+      updateDoc
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyA9__Hlz8cGIPhJrSFSIIkgBIX5qhn8WGo',
+      authDomain: 'my-golf-game-5f1bc.firebaseapp.com',
+      projectId: 'my-golf-game-5f1bc',
+      storageBucket: 'my-golf-game-5f1bc.appspot.com',
+      messagingSenderId: '560609426459',
+      appId: '1:560609426459:web:ab0d0c3f69373d414b8cbe'
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function getScores(db) {
+      let scores = collection(db, 'stats');
+      let scoreSnapshot = await getDocs(scores);
+      let scoreList = scoreSnapshot.docs.map(doc => doc.data());
+      return scoreList;
+    }
+
+    let list = document.querySelector('#score-list');
+
+    function renderScore(dc) {
+      let div = document.createElement('div');
+      div.style =
+        'margin-top: 10px; padding-top: 10px; display: flex; border-top: 1px solid #000000';
+      let par = document.createElement('span');
+      let fir = document.createElement('span');
+      let gir = document.createElement('span');
+      let putts = document.createElement('span');
+      let score = document.createElement('span');
+      div.setAttribute('data-id', dc.id);
+      par.textContent = dc.data().par;
+      fir.textContent =
+        (dc.data().fir / dc.data().firTotal).toFixed(2) * 100 + '%';
+      gir.textContent =
+        (dc.data().gir / dc.data().girTotal).toFixed(2) * 100 + '%';
+      putts.textContent = dc.data().putts;
+      score.textContent = dc.data().score;
+      div.appendChild(par);
+      div.appendChild(fir);
+      div.appendChild(gir);
+      div.appendChild(putts);
+      div.appendChild(score);
+      list.appendChild(div);
+    }
+
+    let scores = getDocs(collection(db, 'stats')).then(snapshot => {
+      snapshot.forEach(doc => {
+        renderScore(doc);
+      });
+    });
+  </script>
+  <script>
+    function goHome() {
+      window.location.pathname = '/home';
+    }
+  </script>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!--Import materialize.css-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="manifest" href="/public/manifest.json" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Golf Game</title>
+  </head>
+  <body class="container">
+    <div class="header">
+      <div
+        onclick="async function test() {window.location.pathname = '/home'}"
+        style="top: 35px; display: flex; align-items: center; left: 15px; position: absolute; cursor: pointer;"
+      >
+        <i style="font-size: 32px; margin-left: 10px;" class="fa fa-home"></i>
+      </div>
+      <div>
+        <h3>My Golf Game</h3>
+      </div>
+    </div>
+    <form id="tableForm" style="display:flex; flex-direction: column">
+      <div id="tableWrapper"></div>
+      <div style="cursor: pointer;">
+        <button style="right: 0; margin: 15px; position: absolute;">
+          Submit Stats
+        </button>
+      </div>
+    </form>
+  </body>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      doc,
+      deleteDoc,
+      where,
+      query,
+      updateDoc
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+    let myUser = localStorage.getItem('user');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let par = 0;
+      let fir = 0;
+      let firTotal = 0;
+      let gir = 0;
+      let girTotal = 0;
+      let putts = 0;
+      let score = 0;
+
+      const firebaseConfig = {
+        apiKey: 'AIzaSyA9__Hlz8cGIPhJrSFSIIkgBIX5qhn8WGo',
+        authDomain: 'my-golf-game-5f1bc.firebaseapp.com',
+        projectId: 'my-golf-game-5f1bc',
+        storageBucket: 'my-golf-game-5f1bc.appspot.com',
+        messagingSenderId: '560609426459',
+        appId: '1:560609426459:web:ab0d0c3f69373d414b8cbe'
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      for (let i = 0; i < 108; i++) {
+        let element = document.querySelector(`#d${i}`);
+        if (element) {
+          if (!element.value) {
+            element.value = 0;
+          }
+          if (i % 6 === 1) {
+            par += parseInt(element.value);
+          } else if (i % 6 === 2) {
+            if (element.value.toLowerCase() === 'y') {
+              fir++;
+              firTotal++;
+            } else if (element.value.toLowerCase() === 'n') {
+              firTotal++;
+            }
+          } else if (i % 6 === 3) {
+            if (element.value.toLowerCase() === 'y') {
+              gir++;
+              girTotal++;
+            } else if (element.value.toLowerCase() === 'n') {
+              girTotal++;
+            }
+          } else if (i % 6 === 4) {
+            putts += parseInt(element.value);
+          } else if (i % 6 === 5) {
+            score += parseInt(element.value);
+          }
+        }
+      }
+      addDoc(collection(db, 'stats'), {
+        par: par,
+        fir: fir,
+        firTotal: firTotal,
+        gir: gir,
+        girTotal: girTotal,
+        putts: putts,
+        score: score,
+        email: myUser
+      })
+        .then(val => {
+          var idb;
+          var request = indexedDB.open('MyTestDatabase');
+          request.onerror = function(event) {
+            console.log('IndexedDB not allowed');
+          };
+          request.onsuccess = function(event) {
+            idb = event.target.result;
+          };
+          request.onupgradeneeded = function(event) {
+            idb = event.target.result;
+            /* let recentScore = idb.createObjectStore('recentScore');
+            recentScore.transaction.oncomplete = function(event) {
+              var ScoreObjectStore = idb
+                .transaction('recentScore', 'readwrite')
+                .objectStore('recentScore');
+              recentScore.add({
+                par: par,
+                fir: fir,
+                firTotal: firTotal,
+                gir: gir,
+                girTotal: girTotal,
+                putts: putts,
+                score: score,
+                email: myUser,
+                created: new Date()
+              });
+            }; */
+          };
+          window.location.pathname = '/home';
+        })
+        .catch(err => {
+          console.log('----ERROR----', err);
+        });
+    });
+  </script>
+  <script>
+    let myTable = '<tbody><tr>';
+    myTable +=
+      '<td style="text-align: center;">Hole</td>' +
+      '<td onclick="sendAlert(`Par: The par score for the hole`)" style="text-align: center; cursor: pointer;">Par</td>' +
+      '<td onclick="sendAlert(`Fairway in regulation (FIR): Did you hit the ball in the fairway off the tee?`)" style="text-align: center; cursor: pointer;">FIR (Y/N)</td>' +
+      '<td onclick="sendAlert(`Green in regulation (GIR): Did you have a birdie putt?`)" style="text-align: center; cursor: pointer;">GIR (Y/N)</td>' +
+      '<td onclick="sendAlert(`Putts: The number of putts used for the hole`)" style="text-align: center; cursor: pointer;">Putts</td>' +
+      '<td onclick="sendAlert(`Score: Your score for the hole`)" style="text-align: center; cursor: pointer;">Score</td>';
+
+    for (let i = 0; i < 108; i++) {
+      if (i % 6 === 0) {
+        myTable +=
+          '</tr><tr id="' +
+          (i / 6 + 1) +
+          '"><td style="text-align: center;">' +
+          (i / 6 + 1) +
+          '</td>';
+      } else {
+        myTable +=
+          '<td><input autocomplete="off" style="text-align: center; border-bottom: none; margin: 0;" id="d' +
+          i +
+          '" /></td>';
+      }
+    }
+
+    function sendAlert(message) {
+      alert(message);
+    }
+
+    myTable += '</tr></tbody>';
+    let wrapper = document.getElementById('tableWrapper');
+    let table = document.createElement('table');
+    let form = document.querySelector('#tableForm');
+    table.innerHTML = myTable;
+    wrapper.appendChild(table);
+  </script>
+</html>

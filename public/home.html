@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!--Import materialize.css-->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="manifest" href="/public/manifest.json" />
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Golf Game</title>
+  </head>
+  <body class="container">
+    <div class="header">
+      <div
+        onclick="route('/home')"
+        style="top: 35px; display: flex; align-items: center; left: 15px; position: absolute; cursor: pointer"
+      >
+        <i style="font-size: 32px; margin-left: 10px;" class="fa fa-home"></i>
+      </div>
+      <div>
+        <h3>My Golf Game</h3>
+      </div>
+    </div>
+    <div class="buttonContainer">
+      <div class="button1" onclick="route('/record')">
+        <div style="display: flex;">
+          <div style="font-size: 24px; margin-right: 10px;">Record Stats</div>
+          <i
+            style="font-size: 32px; margin-top: 2.5px;"
+            class="fa fa-pencil"
+          ></i>
+        </div>
+      </div>
+      <div class="button2" onclick="route('/stats')">
+        <div style="display: flex;">
+          <div style="font-size: 24px; margin-right: 10px;">View Stats</div>
+          <i
+            style="font-size: 32px; margin-top: 2.5px;"
+            class="fa fa-book fa-fw"
+          ></i>
+        </div>
+      </div>
+    </div>
+    <!--JavaScript at end of body for optimized loading-->
+    <script>
+      function route(path) {
+        window.location.pathname = path;
+      }
+    </script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+  </body>
+</html>
